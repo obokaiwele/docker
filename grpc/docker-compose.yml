@@ -1,0 +1,7 @@
+version: '3.3'
+
+services:
+  ubuntu:
+    build: .
+    environment:
+      GRPC_VERSION: v1.20.0
