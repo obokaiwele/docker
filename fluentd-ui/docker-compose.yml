@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+  fluentd:
+    # Use default Dockerfile: './Dockerfile'
+    build: .
+    ports:
+      - 24224:24224
+      - 24224:24224/udp
+      - 5140:5140
+      - 9292:9292
+    volumes:
+      - ./log:/fluentd/log
