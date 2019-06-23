@@ -1,0 +1,8 @@
+version: '3.3'
+
+services:
+  cron:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./cron.sh:/etc/periodic/15min/cron.sh
