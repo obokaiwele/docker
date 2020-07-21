@@ -1,42 +1,36 @@
 # Execution environment with gRPC
-FROM ubuntu:18.04
+FROM alpine:3.12.0
 
-ENV GRPC_VERSION v1.20.0
+ARG GRPC_VERSION
 
 LABEL maintainer="obokaiwele <https://github.com/obokaiwele>"
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    # Install development tools
-    apt-get install -y \
-      autoconf \
-      automake \
-      build-essential \
-      curl \
-      gcc \
-      git \
-      libgflags-dev \
-      libtool \
-      make \
-      net-tools \
-      pkg-config \
-      unzip \
-      vim && \
+RUN apk update \
+    # Install build dependecies
+    && apk add --no-cache --virtual build-dependecies \
+        autoconf \
+        automake \
+        build-base \
+        gflags-dev \
+        git \
+        libtool \
+        linux-headers \
     # Install gRPC from source
-    cd / && \
-      git clone --recursive -b $GRPC_VERSION https://github.com/grpc/grpc && \
-      cd grpc/third_party/protobuf && \
-      ./autogen.sh && \
-      ./configure && \
-      make && \
-      make check && \
-      make install && \
-      ldconfig && \
-      cd ../../ && \
-        make && \
-        make install && \
+    && git clone --recursive -b $GRPC_VERSION https://github.com/grpc/grpc /grpc \
+        && cd /grpc/third_party/protobuf \
+        && ./autogen.sh \
+        && ./configure \
+        && make \
+        && make check \
+        && make install \
+        && ldconfig /grpc \
+    && cd /grpc \
+        && make \
+        && make install \
     # Install gRPC CLI
-    cd /grpc && \
-      git submodule update --init && \
-      make grpc_cli && \
-      ln -s /grpc/bins/opt/grpc_cli /bin/grpc_cli
+    && git submodule update --init \
+        && make grpc_cli \
+        && cp /grpc/bins/opt/grpc_cli /usr/local/bin/ \
+    # Cleanup build dependecies
+    && apk del build-dependecies \
+    && rm -rf /grpc
