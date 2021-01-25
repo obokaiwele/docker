@@ -32,5 +32,4 @@ RUN apk update \
         && make grpc_cli \
         && cp /grpc/bins/opt/grpc_cli /usr/local/bin/ \
     # Cleanup build dependecies
-    && apk del build-dependecies \
-    && rm -rf /grpc
+    && apk del build-dependecies
