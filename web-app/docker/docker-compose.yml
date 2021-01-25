@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: app.Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ../www/:/var/www/html/
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DOMAIN: ${DOMAIN}
+
+  web:
+    image: nginx:1.19-alpine
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-81}:80"
+      - "${HTTPS_PORT:-444}:443"
+    volumes:
+      - ../www/:/var/www/html/
+      - ../nginx/conf.d/default.conf:/etc/nginx/templates/default.conf.template
+      - ../nginx/log/:/var/log/nginx/
+      - ../nginx/ssl/dhparam-2048.pem:/etc/nginx/ssl/dhparam-2048.pem
+      - ../nginx/ssl/public.crt:/etc/nginx/ssl/public.crt
+      - ../nginx/ssl/private.key:/etc/nginx/ssl/private.key
+    environment:
+      DOMAIN: ${DOMAIN}
+
+  db:
+    image: postgres:13-alpine
+    restart: unless-stopped
+    volumes:
+      - ../database/postgres/13:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
