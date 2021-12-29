@@ -2,7 +2,7 @@
 Useful collection of Dockerfile templates
 
 ## Size
-# Process: Start with bloated image that contains all the required functionality, then iteratively trim the image
+Process: Start with bloated image that contains all the required functionality, then iteratively trim the image
 
 | Image | Version | Date                | Size      |
 | ----- | ----    | ------------------  | ------    |
