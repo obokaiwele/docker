@@ -1,0 +1,8 @@
+version: '3.3'
+
+services:
+  swagger:
+    image: swaggerapi/swagger-editor:latest
+    restart: unless-stopped
+    ports:
+      - 8081:8080
